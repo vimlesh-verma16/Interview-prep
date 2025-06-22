@@ -25,17 +25,17 @@
 
 class Singleton:
     _instance = None
-    _initialized = False  # Class-level flag (more explicit than instance-level)
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
         return cls._instance
 
     def __init__(self, value):
-        if not Singleton._initialized:
+        if not self._initialized:
             self.value = value
-            Singleton._initialized = True
+            self._initialized = True
 
 
 # Usage

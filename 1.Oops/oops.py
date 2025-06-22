@@ -312,18 +312,18 @@ print("\n Polymorphism--- (Many Forms)----------------------------------------- 
 """class decorator or getters or setters """
 
 
-# class Employee:
-#     salary = 5700
-#     bonous = 300
-#     # totalsalary=6000
+class Employee:
+    salary = 5700
+    bonous = 300
+    # totalsalary=6000
 
-#     @property  # it is a getter function
-#     def totalsalary(self):
-#         return self.salary+self.bonous
+    @property  # it is a getter function
+    def totalsalary(self):
+        return self.salary + self.bonous
 
-#     @totalsalary.setter  # it is setting some value
-#     def totalsalary(self, val):
-#         self.bonous = val-self.salary
+    @totalsalary.setter  # it is setting some value
+    def totalsalary(self, val):
+        self.bonous = val - self.salary
 
 
 # e = Employee()
@@ -332,26 +332,27 @@ print("\n Polymorphism--- (Many Forms)----------------------------------------- 
 # print(e.bonous)
 # print(e.salary)
 
-"""operator overloading """
+""" Operator overloading """
 
 
-# class Number:
-#     def __init__(self, num):
-#         self.num = num
+class Number:
+    def __init__(self, num):
+        self.num = num
 
-#     def __add__(self, num2):
-#         print('lets add')
-#         return self.num+num2.num
+    def __add__(self, num2):
+        print("lets add")
+        return self.num + num2.num
 
-#     def __mul__(self, num2):
-#         print('lets multiply')
-#         return self.num*num2.num
+    def __mul__(self, num2):
+        print("lets multiply")
+        return self.num * num2.num
 
-#     def __str__(self):
-#         return f'this is decimal number {self.num}'
+    def __str__(self):
+        return f"this is decimal number {self.num}"
 
-#     def __len__(self):
-#         return 1
+    def __len__(self):
+        return 1
+
 
 # n1 = Number(4)
 # n2 = Number(6)
