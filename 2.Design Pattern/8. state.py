@@ -134,3 +134,155 @@ light.show()  # YELLOW
 light.change()
 
 light.show()  # Back to RED
+
+
+# ---------------------------------
+
+from abc import ABC, abstractmethod
+
+
+# ---------- State Interface ----------
+class State(ABC):
+    @abstractmethod
+    def insert_money(self, context, amount):
+        pass
+
+    @abstractmethod
+    def select_item(self, context, item):
+        pass
+
+    @abstractmethod
+    def dispense(self, context):
+        pass
+
+
+# ---------- Context ----------
+class VendingMachineContext:
+    def __init__(self):
+        self.inventory = {"coffee": 2, "tea": 1, "soda": 0}
+        self.balance = 0
+        self.selected_item = None
+
+        # Initial state
+        self.state = IdleState()
+
+    def set_state(self, state: State):
+        self.state = state
+
+    def insert_money(self, amount):
+        self.state.insert_money(self, amount)
+
+    def select_item(self, item):
+        self.state.select_item(self, item)
+
+    def dispense(self):
+        self.state.dispense(self)
+
+    def __str__(self):
+        return f"{self.state } this is vending machine state context"
+
+
+# ---------- Idle State ----------
+class IdleState(State):
+    def insert_money(self, context, amount):
+        context.balance += amount
+        print(f"[Idle] Money inserted: ₹{amount}")
+        # print(context)
+        context.set_state(HasMoneyState())
+        # print(context)
+
+    def select_item(self, context, item):
+        print("[Idle] Please insert money first.")
+
+    def dispense(self, context):
+        print("[Idle] Cannot dispense. No money or item selected.")
+
+    def __str__(self):
+        return "ideal state"
+
+
+# ---------- Has Money State ----------
+class HasMoneyState(State):
+    def insert_money(self, context, amount):
+        context.balance += amount
+        print(f"[HasMoney] Additional ₹{amount} inserted.")
+
+    def select_item(self, context, item):
+        if item not in context.inventory:
+            print(f"[HasMoney] {item} is not available.")
+            return
+
+        if context.inventory[item] == 0:
+            print(f"[HasMoney] {item} is out of stock.")
+            context.set_state(OutOfStockState())
+        else:
+            context.selected_item = item
+            print(f"[HasMoney] {item} selected.")
+            context.set_state(DispensingState())
+
+    def dispense(self, context):
+        print("[HasMoney] Please select an item first.")
+
+    def __str__(self):
+        return "has money state"
+
+
+# ---------- Dispensing State ----------
+class DispensingState(State):
+    prices = {"coffee": 10, "tea": 5, "soda": 15}
+
+    def insert_money(self, context, amount):
+        print("[Dispensing] Please wait. Dispensing in progress.")
+
+    def select_item(self, context, item):
+        print("[Dispensing] Already selected. Dispensing...")
+
+    def dispense(self, context):
+        item = context.selected_item
+        price = self.prices.get(item, 0)
+
+        if context.balance < price:
+            print(f"[Dispensing] Not enough money. {item} costs ₹{price}.")
+            context.set_state(HasMoneyState())
+            return
+
+        # Dispense item
+        context.inventory[item] -= 1
+        context.balance -= price
+        print(f"[Dispensing] Dispensed: {item}. Remaining balance: ₹{context.balance}")
+
+        # Reset state
+        context.selected_item = None
+        context.set_state(IdleState())
+
+
+# ---------- OutOfStock State ----------
+class OutOfStockState(State):
+    def insert_money(self, context, amount):
+        print("[OutOfStock] Item is out of stock. Returning ₹{amount}.")
+        context.balance = 0
+        context.set_state(IdleState())
+
+    def select_item(self, context, item):
+        print("[OutOfStock] Cannot select. Item unavailable.")
+        context.set_state(IdleState())
+
+    def dispense(self, context):
+        print("[OutOfStock] Cannot dispense. Item unavailable.")
+        context.set_state(IdleState())
+
+
+print("\n\n\n\n")
+machine = VendingMachineContext()
+
+machine.select_item("tea")  # Should ask to insert money
+machine.insert_money(10)  # ₹10 inserted
+machine.select_item("soda")  # Out of stock
+machine.select_item("tea")  # Tea selected
+machine.dispense()  # Dispenses tea
+
+machine.insert_money(5)  # ₹5 inserted
+machine.select_item("coffee")  # Select coffee
+machine.dispense()  # Not enough money
+machine.insert_money(5)  # ₹5 more
+machine.dispense()  # Dispenses coffee

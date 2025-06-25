@@ -2,6 +2,120 @@
 # camelCase = employeeName
 # Lists are slightly faster than sets when you just want to iterate over the values. Sets, however, are significantly faster than lists if you want to check if an item is contained within it. They can only contain unique items though
 
+
+import asyncio
+
+
+async def say_hello():
+    await asyncio.sleep(1)
+    print("Hello")
+
+
+async def say_world():
+    await asyncio.sleep(2)
+    print("World")
+
+
+async def main():
+    await asyncio.gather(say_hello(), say_world())  # Runs concurrently (~2 sec total)
+
+
+asyncio.run(main())
+
+
+# Example 2 Fetch Multiple URLs Concurrently
+
+# import aiohttp
+# import asyncio
+
+
+# async def fetch_url(url):
+#     async with aiohttp.ClientSession() as session:
+#         async with session.get(url) as response:
+#             return await response.text()
+
+
+# async def main():
+#     urls = ["https://example.com", "https://python.org", "https://google.com"]
+#     tasks = [fetch_url(url) for url in urls]
+#     results = await asyncio.gather(*tasks)
+#     for url, content in zip(urls, results):
+#         print(f"{url} → {len(content)} bytes")
+
+
+# asyncio.run(main())
+
+# Example 2   Async File I/O (Python 3.11+)
+
+# import asyncio
+
+
+# async def write_file(filename, data):
+#     async with asyncio.open(filename, "w") as f:
+#         await f.write(data)
+#     print(f"Written to {filename}")
+
+
+# async def main():
+#     await asyncio.gather(
+#         write_file("file1.txt", "Hello"), write_file("file2.txt", "World")
+#     )
+
+
+# asyncio.run(main())
+
+
+# Example 4   Producer-Consumer Pattern
+# async def producer(queue):
+#     for i in range(5):
+#         await asyncio.sleep(random.random())
+#         await queue.put(f"Item {i}")
+#         print(f"Produced: Item {i}")
+#     await queue.put(None)  # Signal completion
+
+
+# async def consumer(queue):
+#     while True:
+#         item = await queue.get()
+#         if item is None:
+#             break
+#         print(f"Consumed: {item}")
+#         await asyncio.sleep(random.random() * 2)
+
+
+# async def main():
+#     queue = asyncio.Queue()
+#     await asyncio.gather(producer(queue), consumer(queue))
+
+
+# asyncio.run(main())
+
+
+# Advanced example
+
+
+# async def task(name, delay):
+#     await asyncio.sleep(delay)
+#     print(f"Task {name} completed")
+
+
+# async def main():
+#     loop1 = asyncio.new_event_loop()
+#     loop2 = asyncio.new_event_loop()
+
+#     asyncio.set_event_loop(loop1)
+#     task1 = loop1.create_task(task("A", 2))
+
+#     asyncio.set_event_loop(loop2)
+#     task2 = loop2.create_task(task("B", 1))
+
+#     await asyncio.gather(task1, task2, return_exceptions=True)
+#     loop1.close()
+#     loop2.close()
+
+
+# asyncio.run(main())
+
 """type casting the is the way of converting one datatype to other ."""
 
 # a="33"

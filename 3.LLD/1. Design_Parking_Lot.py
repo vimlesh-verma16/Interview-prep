@@ -1,5 +1,8 @@
 from enum import Enum
 
+import uuid
+from datetime import datetime
+
 
 class VehicleType(Enum):
     MOTORCYCLE = 1
@@ -84,10 +87,6 @@ class Level:
 
     def get_available_spots(self):
         return [spot for spot in self.spots if not spot.occupied]
-
-
-import uuid
-from datetime import datetime
 
 
 class Ticket:
